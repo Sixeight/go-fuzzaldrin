@@ -51,8 +51,7 @@ func score(str, query string) float64 {
 		}
 
 		// Trim string to after current abbreviation match
-		str = str[indexInStr+1 : strLength]
-		strLength = len(str)
+		str = str[indexInStr+1 : len(str)]
 
 		totalScore += chScore
 	}

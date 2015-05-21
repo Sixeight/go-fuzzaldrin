@@ -95,6 +95,9 @@ func score(str, query string) float64 {
 }
 
 func queryIsLastPathSegment(str, query string) bool {
+	if len(str) <= len(query) {
+		return false
+	}
 	if os.IsPathSeparator(str[len(str)-len(query)-1]) {
 		return strings.Index(str, query) == (len(str) - len(query))
 	}

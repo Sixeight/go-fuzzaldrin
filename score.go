@@ -6,6 +6,40 @@ import (
 	"strings"
 )
 
+func basenameScore(str, query string, _score float64) float64 {
+	index := len(str) - 1
+	for os.IsPathSeparator(str[index]) {
+		index--
+	}
+	slashCount := 0
+	lastCharacter := index
+	var base string
+	for index >= 0 {
+		if os.IsPathSeparator(str[index]) {
+			slashCount++
+			base = str[index+1 : lastCharacter+1]
+		} else if index == 0 {
+			if lastCharacter < len(str)-1 {
+				base = str[0 : lastCharacter+1]
+			} else {
+				base = str
+			}
+		}
+		index--
+	}
+
+	if base == str {
+		_score *= 2
+	} else if base != "" {
+		_score += score(base, query)
+	}
+
+	segmentCount := slashCount + 1
+	depth := math.Max(1.0, float64(10-segmentCount))
+	_score *= depth * 0.01
+	return _score
+}
+
 func score(str, query string) float64 {
 	if str == query {
 		return 1

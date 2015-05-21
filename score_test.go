@@ -23,4 +23,9 @@ func TestScore(t *testing.T) {
 	if emptyString != 0 {
 		t.Errorf("%v must be 0", emptyString)
 	}
+
+	lastSeparator := Score("/path/to/foo", "foo")
+	if lastSeparator != 1 {
+		t.Errorf("%v mus be 1", lastSeparator)
+	}
 }

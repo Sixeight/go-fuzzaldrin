@@ -28,12 +28,14 @@ func basenameScore(str, query string, _score float64) float64 {
 		index--
 	}
 
+	// Basename matches count for more.
 	if base == str {
 		_score *= 2
 	} else if base != "" {
 		_score += score(base, query)
 	}
 
+	// Shallow files are scored higher
 	segmentCount := slashCount + 1
 	depth := math.Max(1.0, float64(10-segmentCount))
 	_score *= depth * 0.01

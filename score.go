@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func basenameScore(str, query string, _score float64) float64 {
+func basenameScore(str, query string, calcScore float64) float64 {
 	index := len(str) - 1
 	for os.IsPathSeparator(str[index]) {
 		index--
@@ -30,16 +30,16 @@ func basenameScore(str, query string, _score float64) float64 {
 
 	// Basename matches count for more.
 	if base == str {
-		_score *= 2
+		calcScore *= 2
 	} else if base != "" {
-		_score += score(base, query)
+		calcScore += score(base, query)
 	}
 
 	// Shallow files are scored higher
 	segmentCount := slashCount + 1
 	depth := math.Max(1.0, float64(10-segmentCount))
-	_score *= depth * 0.01
-	return _score
+	calcScore *= depth * 0.01
+	return calcScore
 }
 
 func score(str, query string) float64 {

@@ -23,4 +23,15 @@ func TestScore(t *testing.T) {
 	if emptyString != 0 {
 		t.Errorf("%v must be 0", emptyString)
 	}
+
+	japaneseString1 := Score("こんにちは World", "こん")
+	japaneseString2 := Score("こんにちは World", "にちは")
+	if japaneseString1 <= japaneseString2 {
+		t.Errorf("%v must be grater than %v", japaneseString1, japaneseString2)
+	}
+
+	japaneseString3 := Score("こんにちは World", "World")
+	if japaneseString3 <= japaneseString2 {
+		t.Errorf("%v must be grater than %v", japaneseString3, japaneseString2)
+	}
 }

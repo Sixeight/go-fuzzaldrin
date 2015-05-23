@@ -4,6 +4,7 @@ import (
 	"math"
 	"os"
 	"strings"
+	"unicode"
 )
 
 func basenameScore(str, query string, calcScore float64) float64 {
@@ -51,49 +52,57 @@ func score(str, query string) float64 {
 		return 1
 	}
 
-	totalScore := 0.0
-	queryLength := len(query)
-	strLength := len(str)
+	strRunes := []rune(str)
 
-	indexInQuery := 0
+	totalScore := 0.0
+	queryLength := len([]rune(query))
+	strLength := len(strRunes)
+
 	indexInStr := 0
 
-	for indexInQuery < queryLength {
-		ch := query[indexInQuery]
-		indexInQuery++
-		lcIndex := strings.Index(str, strings.ToLower(string(ch)))
-		ucIndex := strings.Index(str, strings.ToUpper(string(ch)))
+	for _, ch := range query {
+		lcIndex := findIndex(strRunes, unicode.ToLower(ch))
+		ucIndex := findIndex(strRunes, unicode.ToUpper(ch))
 		minIndex := math.Min(float64(lcIndex), float64(ucIndex))
 		if minIndex == -1 {
 			minIndex = math.Max(float64(lcIndex), float64(ucIndex))
 		}
-		indexInStr = int(minIndex)
 		if indexInStr == -1 {
 			return 0
 		}
+		indexInStr = int(minIndex)
 
 		chScore := 0.1
 
-		if str[indexInStr] == ch {
+		if strRunes[indexInStr] == ch {
 			chScore += 0.1
 		}
 
-		if indexInStr == 0 || os.IsPathSeparator(str[indexInStr-1]) {
+		if indexInStr == 0 || os.IsPathSeparator(uint8(strRunes[indexInStr-1])) {
 			// Start of string bonus
 			chScore += 0.8
-		} else if strings.Contains("-_ ", string(str[indexInStr-1])) {
+		} else if strings.Contains("-_ ", string(strRunes[indexInStr-1])) {
 			// Start of word bonus
 			chScore += 0.7
 		}
 
 		// Trim string to after current abbreviation match
-		str = str[indexInStr+1 : len(str)]
+		strRunes = strRunes[indexInStr+1 : len(strRunes)]
 
 		totalScore += chScore
 	}
 
 	queryScore := totalScore / float64(queryLength)
 	return ((queryScore * (float64(queryLength) / float64(strLength))) + queryScore) / 2.0
+}
+
+func findIndex(str []rune, ch rune) int {
+	for i, c := range str {
+		if c == ch {
+			return i
+		}
+	}
+	return -1
 }
 
 func queryIsLastPathSegment(str, query string) bool {

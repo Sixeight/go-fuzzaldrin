@@ -101,7 +101,7 @@ func queryIsLastPathSegment(str, query string) bool {
 		return false
 	}
 	if os.IsPathSeparator(str[len(str)-len(query)-1]) {
-		return strings.Index(str, query) == (len(str) - len(query))
+		return strings.LastIndex(str, query) == (len(str) - len(query))
 	}
 	return false
 }

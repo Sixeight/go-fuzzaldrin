@@ -9,7 +9,7 @@ import (
 
 func basenameScore(str, query string, calcScore float64) float64 {
 	index := len(str) - 1
-	for os.IsPathSeparator(str[index]) {
+	for index >= 0 && os.IsPathSeparator(str[index]) {
 		index--
 	}
 	slashCount := 0
@@ -18,12 +18,16 @@ func basenameScore(str, query string, calcScore float64) float64 {
 	for index >= 0 {
 		if os.IsPathSeparator(str[index]) {
 			slashCount++
-			base = str[index+1 : lastCharacter+1]
+			if base == "" {
+				base = str[index+1 : lastCharacter+1]
+			}
 		} else if index == 0 {
-			if lastCharacter < len(str)-1 {
-				base = str[0 : lastCharacter+1]
-			} else {
-				base = str
+			if base == "" {
+				if lastCharacter < len(str)-1 {
+					base = str[0 : lastCharacter+1]
+				} else {
+					base = str
+				}
 			}
 		}
 		index--
@@ -67,13 +71,13 @@ func score(str, query string) float64 {
 		if minIndex == -1 {
 			minIndex = math.Max(float64(lcIndex), float64(ucIndex))
 		}
-		if indexInStr == -1 {
+		if minIndex == -1 {
 			return 0
 		}
-		indexInStr = int(minIndex)
 
 		chScore := 0.1
 
+		indexInStr = int(minIndex)
 		if strRunes[indexInStr] == ch {
 			chScore += 0.1
 		}

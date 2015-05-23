@@ -34,4 +34,9 @@ func TestScore(t *testing.T) {
 	if japaneseString3 <= japaneseString2 {
 		t.Errorf("%v must be grater than %v", japaneseString3, japaneseString2)
 	}
+
+	spaceAsSeparate := Score("bar/foo", "br f")
+	if spaceAsSeparate == 0 {
+		t.Errorf("%v must not be 0", spaceAsSeparate)
+	}
 }

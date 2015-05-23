@@ -100,15 +100,6 @@ func score(str, query string) float64 {
 	return ((queryScore * (float64(queryLength) / float64(strLength))) + queryScore) / 2.0
 }
 
-func findIndex(str []rune, ch rune) int {
-	for i, c := range str {
-		if c == ch {
-			return i
-		}
-	}
-	return -1
-}
-
 func queryIsLastPathSegment(str, query string) bool {
 	if len(str) <= len(query) {
 		return false

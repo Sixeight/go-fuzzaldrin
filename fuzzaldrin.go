@@ -18,7 +18,7 @@ func Score(str, query string) float64 {
 	}
 
 	queryHasSlashes := strings.Index(query, string(os.PathSeparator)) != -1
-	str = strings.Replace(str, " ", "", -1)
+	query = strings.Replace(query, " ", "", -1)
 	calcScore := score(str, query)
 	if !queryHasSlashes {
 		calcScore = basenameScore(str, query, calcScore)

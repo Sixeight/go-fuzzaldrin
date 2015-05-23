@@ -2,6 +2,7 @@ package fuzzaldrin
 
 import (
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -34,4 +35,39 @@ func Score(str, query string) float64 {
 		calcScore = basenameScore(str, query, calcScore)
 	}
 	return calcScore
+}
+
+// Match returns matched indexes
+func Match(str, query string) (indexes []int) {
+	if str == "" {
+		return
+	}
+	if query == "" {
+		return
+	}
+
+	strRunes := []rune(str)
+
+	if str == query {
+		for i := 0; i < len(strRunes); i++ {
+			indexes = append(indexes, i)
+		}
+		return
+	}
+
+	queryHasSlashes := strings.Index(query, string(os.PathSeparator)) != -1
+	query = strings.Replace(query, " ", "", -1)
+	indexes = match(str, query, 0)
+	if !queryHasSlashes {
+		baseIndexes := basenameMatch(str, query)
+		for _, i := range baseIndexes {
+			if contains(indexes, i) {
+				continue
+			}
+			indexes = append(indexes, i)
+		}
+		sort.Ints(indexes)
+	}
+
+	return
 }
